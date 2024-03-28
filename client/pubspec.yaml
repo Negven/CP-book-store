@@ -1,0 +1,67 @@
+name: client
+description: Flutter project
+
+# Prevents the package from being accidentally published
+publish_to: 'none'
+
+# Version must be updated on every publish
+version: 1.0.2
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  collection: ^1.18.0
+  decimal: ^2.3.2 # to support Java.BigDecimal(36,18)
+  drop_shadow: ^0.1.0
+  file_picker: ^6.1.1
+  file_saver: ^0.2.9
+  flutter_layout_grid: ^2.0.4
+  flutter_svg: ^2.0.9
+  get: ^4.6.6
+  get_storage: ^2.1.1
+  go_router: ^12.1.1
+  google_fonts: 6.1.0
+  intl: ^0.18.0
+  js: ^0.6.7
+  logging: ^1.1.1
+  path: ^1.8.3
+  path_provider: ^2.1.1
+  share_plus: ^7.2.1
+  url_launcher: ^6.2.1
+  vector_graphics: ^1.1.6
+  flutter_markdown: ^0.6.18+2
+  math_expressions: ^2.4.0
+  localstorage: ^4.0.1+4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  vector_graphics_compiler: ^1.1.9+1
+
+flutter:
+
+  # Not including Material Icons font
+  uses-material-design: false
+
+  assets:
+    - assets/@inf/team/
+    - assets/svg/
+    - assets/flags/
+    - assets/json/
+    - assets/google_fonts/
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-VF.ttf
+    - family: Icons
+      fonts:
+        - asset: assets/fonts/Icons.ttf
