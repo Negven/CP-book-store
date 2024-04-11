@@ -1,7 +1,5 @@
 import 'package:client/@app/translations/app_en.dart';
 import 'package:client/@app/translations/app_ua.dart';
-import 'package:client/@inf/translations/inf_en.dart';
-import 'package:client/@inf/translations/inf_nb.dart';
 import 'package:client/enum/language_code.dart';
 import 'package:client/enum/preferences.dart';
 import 'package:client/utils/convert_utils.dart';
@@ -14,8 +12,8 @@ import 'package:get/get.dart';
 
 
 final Map<String, Map<String, String>> iKeys = {
-  LanguageCode.en.name: ConvertUtils.mergeUnique([AppEN.translations, InfEN.translations]),
-  LanguageCode.nb.name: ConvertUtils.mergeUnique([AppUA.translations, InfNB.translations]),
+  LanguageCode.en.name: ConvertUtils.mergeUnique([AppEN.translations]),
+  LanguageCode.nb.name: ConvertUtils.mergeUnique([AppUA.translations]),
 };
 
 
@@ -53,7 +51,6 @@ class TranslationKeys extends Translations {
     }
 
     validatePositions(AppEN.translations, AppUA.translations);
-    validatePositions(InfEN.translations, InfNB.translations);
 
   }
 

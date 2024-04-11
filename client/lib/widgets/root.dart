@@ -1,7 +1,6 @@
 
 
 import 'package:client/@app/app_section.dart';
-import 'package:client/@inf/inf_section.dart';
 import 'package:client/@main/pages/not_found_page.dart';
 import 'package:client/classes/pages.dart';
 import 'package:client/service/_services.dart';
@@ -34,7 +33,7 @@ class Root extends StatelessWidget { // RootWidget - conflict with flutter
 
     var section = EmptySection.instance;
     if (pageBuilder != NotFoundPage.new) {
-      section = path.startsWith(Pages.app) ? AppSection.instance : InfSection.instance;
+      section =  AppSection.instance;
     }
 
     _section.value = section;

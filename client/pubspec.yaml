@@ -39,6 +39,7 @@ dependencies:
   flutter_markdown: ^0.6.18+2
   math_expressions: ^2.4.0
   localstorage: ^4.0.1+4
+  dcdg: ^4.1.0
 
 dev_dependencies:
   flutter_test:

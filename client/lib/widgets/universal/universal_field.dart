@@ -8,16 +8,13 @@ import 'package:client/widgets/font_icon.dart';
 import 'package:client/widgets/material/materials.dart';
 import 'package:client/widgets/modal.dart';
 import 'package:client/widgets/universal/universal_field_context.dart';
+import 'package:client/widgets/universal/universal_icon.dart';
 import 'package:client/widgets/universal/universal_ink_well.dart';
 import 'package:client/widgets/universal/universal_item.dart';
-import 'package:client/widgets/universal/universals.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-export 'package:client/widgets/universal/universal_field_cancel.dart';
-export 'package:client/widgets/universal/universal_query.dart';
 export 'package:client/widgets/universal/universal_selectable_list.dart';
-export 'package:client/widgets/universal/universal_selectable_tile.dart';
 
 
 typedef ItemToInput<I> = Widget? Function(I item);

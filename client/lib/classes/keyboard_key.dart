@@ -1,6 +1,7 @@
 
 import 'package:flutter/services.dart';
 
+// Клавіші клавіатури, які можна натиснути
 enum KeyboardBiKey {
 
   enter(LogicalKeyboardKey.enter, PhysicalKeyboardKey.enter),
@@ -19,16 +20,19 @@ enum KeyboardBiKey {
   final PhysicalKeyboardKey _physical;
   const KeyboardBiKey(LogicalKeyboardKey logical, PhysicalKeyboardKey physical) : _logical = logical, _physical = physical;
 
+  // Перевіряє, чи натиснута клавіша
   bool isPressed(KeyEvent event) {
     return event.logicalKey == _logical || event.physicalKey == _physical;
   }
 
+  // Клавіші-модифікатори
   static const metaKeys = [
     KeyboardBiKey.shiftLeft, KeyboardBiKey.shiftRight,
     KeyboardBiKey.metaLeft, KeyboardBiKey.metaRight,
     KeyboardBiKey.controlLeft, KeyboardBiKey.controlRight,
   ];
 
+  // Чи натиснута клавіша-модифікатор
   static bool get isMetaPressed {
 
     for (var key in metaKeys) {
@@ -40,3 +44,4 @@ enum KeyboardBiKey {
     return false;
   }
 }
+

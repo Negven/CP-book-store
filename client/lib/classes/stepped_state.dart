@@ -1,72 +1,43 @@
-
-
 import 'package:client/classes/lazy.dart';
 import 'package:client/classes/utilizable_state.dart';
 import 'package:client/classes/widget_steps.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-// import '../@app/modals/account_create/create_account_modal_state.dart';
-// import '../@app/modals/institution_integration_add/@add_institution_integration_modal.dart';
-
-
+// Міксін для крокового інтерфейсу
 mixin SteppedStep {
-  WidgetStepAction get canGoBack => WidgetStepAction.go;
-  WidgetStepAction get canGoNext => WidgetStepAction.go;
-}
-final multiStateModalKey = GlobalKey();
-
-mixin IMultiModal$State {
-
-  MultiState get multiState => multiStateModalKey.currentState as MultiState;
-  // InstitutionIntegrationModal$Add$State get institutionState => multiState.state();
-  // CreateAccountModalState get createAccountModalState => multiState.state();
-
+  WidgetStepAction get canGoBack => WidgetStepAction.go; // Дозволений крок назад
+  WidgetStepAction get canGoNext => WidgetStepAction.go; // Дозволений крок вперед
 }
 
-
-abstract class MultiState<SP, W extends StatefulWidget> extends UtilizableState<W> with SteppedState<SP> {
-
-  final Map<dynamic, dynamic> _states = {};
-
-  ST initModalState<ST>();
-
-  ST state<ST>() {
-    if(_states[ST] == null) {
-      _states[ST] = initModalState<ST>();
-    }
-    return _states[ST];
-  }
-
-
-}
-
+// Міксін для крокового стану
 mixin SteppedState<T> {
 
+  // Дерево кроків
   Map<T, dynamic> get stepsTree;
 
-  late final _steps = Lazy<WidgetSteps<T>>(() => WidgetSteps<T>(stepsTree));
-  WidgetSteps<T> get steps => _steps.value;
+  late final _steps = Lazy<WidgetSteps<T>>(() => WidgetSteps<T>(stepsTree)); // Ліниве створення екземпляру класу кроків
+  WidgetSteps<T> get steps => _steps.value; // Доступ до кроків
 
-  final RxList<T> _history = RxList();
+  final RxList<T> _history = RxList(); // Історія кроків
 
-  T get current => _history.last;
+  T get current => _history.last; // Поточний крок
 
   set current(T step) {
 
     var previous = _history.lastOrNull;
-    if (previous == step) {
+    if (previous == step) { // Якщо поточний крок вже встановлено
       return;
     }
 
     var action = canGoTo(step);
-    if (action == WidgetStepAction.go) {
+    if (action == WidgetStepAction.go) { // Якщо дозволений перехід на крок
 
       final i = _history.lastIndexOf(step);
       if (i >= 0) {
-        _history.removeRange(i + 1, _history.length); // going back
+        _history.removeRange(i + 1, _history.length); // Перехід назад
       } else if (_history.lastOrNull != step) {
-        _history.add(step);
+        _history.add(step); // Додати новий крок до історії
       }
 
     } else if (action == WidgetStepAction.skip) {
@@ -78,11 +49,11 @@ mixin SteppedState<T> {
     }
   }
 
-  bool isPrevious(T step) => steps.isPreviousTo(step, current);
+  bool isPrevious(T step) => steps.isPreviousTo(step, current); // Перевірка, чи є крок попереднім до поточного
 
-  T firstStep() => steps.root;
+  T firstStep() => steps.root; // Перший крок
 
-  bool get isFirstStep => _history.isNotEmpty && _history.first == current;
+  bool get isFirstStep => _history.isNotEmpty && _history.first == current; // Чи є поточний крок першим
 
   WidgetStepAction canGoBack(T? next) {
 
@@ -108,7 +79,7 @@ mixin SteppedState<T> {
     return canGoTo(next);
   }
 
-  WidgetStepAction canGoTo(T? next) => steps.canGoTo(next);
+  WidgetStepAction canGoTo(T? next) => steps.canGoTo(next); // Перевірка можливості переходу на крок
 
   void goBack([T? from]) {
 

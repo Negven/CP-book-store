@@ -11,9 +11,9 @@ export 'package:client/classes/sized_value.dart';
 
 
 abstract class _Guidelines {
-
+// Метод для обчислення відношення значення до базового
   static double _v(int v) => double.parse(pow(1.5, v).toStringAsFixed(2));
-
+  // Налаштування розмірів
   static final sCx = _v(11); // 86.50
   static final sBx = _v(10); // 57.66
   static final sAx = _v(09); // 38.44
@@ -36,7 +36,7 @@ abstract class _Guidelines {
 
 }
 
-
+// Перерахування типів відступів
 enum PaddingType {
 
   vh,
@@ -47,7 +47,7 @@ enum PaddingType {
   static const base = vh;
 }
 
-
+// Перерахування форми поверхні
 enum SurfaceShape {
 
   rectangle,
@@ -58,7 +58,7 @@ enum SurfaceShape {
   static SurfaceShape nvl(SurfaceShape? shape) => shape ?? base;
 }
 
-// column = in case of mobile in vertical orientation half of total width
+// Клас з розмірами контенту
 class ContentDimensions {
 
   final int menus;

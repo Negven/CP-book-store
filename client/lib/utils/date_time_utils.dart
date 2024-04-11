@@ -1,22 +1,22 @@
-
-
 import 'package:client/enum/language_code.dart';
 import 'package:client/utils/convert_utils.dart';
 import 'package:intl/date_symbol_data_custom.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
 
-// NB! Mainly to force strict type checking
-
+// Абстрактний клас для роботи з датою та часом
 abstract class ADate<UD, CD> {
   UD toUtc();
   CD toClient();
   String format();
 }
 
+// Формат дати ISO
 final isoDateFormat = DateFormat("yyyy-MM-dd");
+// Формат дати та часу ISO
 final isoDateTimeFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISO_8601_PATTERN
 
+// Клас для роботи з датою та часом у форматі UTC
 class UtcDateTime extends DateTime implements ADate<UtcDateTime, ClientDateTime> {
 
   UtcDateTime.from(DateTime dateTime) : super.fromMillisecondsSinceEpoch(dateTime.millisecondsSinceEpoch, isUtc: true);
@@ -42,7 +42,7 @@ class UtcDateTime extends DateTime implements ADate<UtcDateTime, ClientDateTime>
   }
 }
 
-
+// Клас для роботи з датою та часом на клієнті
 class ClientDateTime extends DateTime implements ADate<UtcDateTime, ClientDateTime> {
 
   ClientDateTime.from(DateTime dateTime) : super.fromMillisecondsSinceEpoch(dateTime.millisecondsSinceEpoch, isUtc: false);
@@ -61,6 +61,7 @@ class ClientDateTime extends DateTime implements ADate<UtcDateTime, ClientDateTi
   static ClientDateTime get now => ClientDateTime._now();
 }
 
+// Клас для роботи з датою у форматі UTC
 class UtcDate extends DateTime implements ADate<UtcDate, ClientDate> {
 
   UtcDate(super.year, [super.month, super.day]) : super.utc();
@@ -83,10 +84,9 @@ class UtcDate extends DateTime implements ADate<UtcDate, ClientDate> {
     if (value is String) return UtcDate.parse(value);
     throw "Invalid value, expected String, but got $value";
   }
-
 }
 
-
+// Клас для роботи з датою на клієнті
 class ClientDate extends DateTime implements ADate<UtcDate, ClientDate> {
 
   ClientDate._now() : super.now();
@@ -103,10 +103,9 @@ class ClientDate extends DateTime implements ADate<UtcDate, ClientDate> {
   String format() => DateTimeUtils.clientDateFormat.format(this);
 
   static ClientDate get now => ClientDate._now();
-
 }
 
-
+// Утиліти для роботи з датою та часом
 abstract class DateTimeUtils {
 
   static DateFormat? _clientDateFormat;
@@ -115,6 +114,7 @@ abstract class DateTimeUtils {
   static DateFormat? _clientDateTimeFormat;
   static DateFormat get clientDateTimeFormat => _clientDateTimeFormat!;
 
+  // Встановлення локалі
   static void setLocale(LanguageCode languageCode) {
 
     Intl.defaultLocale = languageCode.name;
@@ -129,6 +129,7 @@ abstract class DateTimeUtils {
     _clientDateTimeFormat = DateFormat.yMd().add_Hms();
   }
 
+  // Паттерни для різних мов
   static const common = {
     'E': 'ccc', // ABBR_WEEKDAY
     'EEEE': 'cccc', // WEEKDAY
@@ -193,6 +194,7 @@ abstract class DateTimeUtils {
     'yMMMMEEEEd': 'EEEE d MMMM y', // YEAR_MONTH_WEEKDAY_DAY
   };
 
+  // Мапа символів дати та часу
   static Map<LanguageCode,DateSymbols> get dateTimeSymbolMap => {
     LanguageCode.en: DateSymbols(
       NAME: LanguageCode.en.name,
@@ -248,6 +250,7 @@ abstract class DateTimeUtils {
     ),
   };
 
+  // Патерни дати та часу для різних мов
   static Map<LanguageCode,Map<String,String>> get dateTimePatternMap => {
     LanguageCode.en: ConvertUtils.mergeUnique([en, common]),
     LanguageCode.nb: ConvertUtils.mergeUnique([nb, common])

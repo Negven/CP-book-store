@@ -1,52 +1,41 @@
-
-
 import 'package:client/classes/pages.dart';
 import 'package:client/service/_services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-
-
+// Сервіс навігації
 class NavigationService extends GetxService {
 
+  // Отримати контекст
   BuildContext get context => Get.key.currentContext!;
 
-  @override
-  void onReady() {
-    super.onReady();
-
-    Services.auth.listen(() {
-      // In case of credentials outdated/expired
-      // final walletId = nCurrentWalletId;
-      // if (walletId != null) {
-      //   if (!Services.auth.credentials.containsKey(walletId)) {
-      //     go(initialPage());
-      //   }
-      // }
-    });
-  }
-
+  // Отримати роутер
   GoRouter get _router => GoRouter.of(context);
+
+  // Отримати URI
   Uri get uri => _router.routeInformationProvider.value.uri;
 
-  String get path => uri.toString(); // /app/wallet/AA12BCD34/overview
-  String get routePath => uri.path; //  /app/wallet/:walletId/overview
+  // Отримати шлях
+  String get path => uri.toString();
 
-  // String initialPage([String? walletId]) => Services.auth.isSignedIn ? Pages.catalogue : Pages.inf;
+  // Отримати шлях маршруту
+  String get routePath => uri.path;
+
+  // Початкова сторінка
   String initialPage() => Pages.catalogue;
 
+  // Сторінка книги
   String bookPage(String bookId) => Pages.bookPageUrl(bookId);
 
+  // Перейти на сторінку книги
   void goToBook(String bookId) => go(bookPage(bookId));
+
+  // Перейти на початкову сторінку
   void goToInitial() => go(initialPage());
 
-  // WalletId taken from URL
-  // String? get nCurrentWalletId => Pages.walletIdFromPath(path);
-  // String get rCurrentWalletId => nCurrentWalletId!;
-
+  // Підготувати місцезнаходження
   String _prepareLocation(String nextLocation, Map<String,String>? params) {
-
     Uri uri = Uri.parse(nextLocation);
     if (params != null && params.isNotEmpty) {
       final next = <String,String>{};
@@ -54,25 +43,25 @@ class NavigationService extends GetxService {
       next.addAll(params);
       uri = uri.replace(queryParameters: next);
     }
-
     return uri.toString();
   }
 
+  // Перейти на місцезнаходження
   void go(String location, [Map<String,String>? params]) {
     _router.go(_prepareLocation(location, params));
   }
 
+  // Замінити параметри
   void replace(Map<String,String> params) {
     go(uri.path, params);
   }
 
+  // Поточний шлях
   final currentPath = Routes.root.obs;
   int get currentUserId => Services.auth.storage.getItem("userId");
 
+  // Запустити навігацію
   void triggerNavigation() {
-    // currentUserId.value = nCurrentWalletId; // to make possible use in UI
     currentPath.value = path;
   }
-
-
 }

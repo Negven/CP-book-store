@@ -80,9 +80,6 @@ class MasterColors extends ColorScheme {
     // see details in py/svg/main.py file
     debugPrint("""
     
-    # NB! Don't change colors manually, see 
-    #  - initial log on client app start or
-    #  - printSvgColors() in MasterColors
     primary = '${l.primary} ${d.primary}'
     danger = '${l.danger} ${d.danger}'
     danger_l2 = '${l.dangerL2} ${d.dangerL2}'

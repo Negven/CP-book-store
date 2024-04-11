@@ -1,7 +1,6 @@
 
 
 import 'package:client/service/translations_service.dart';
-import 'package:client/utils/encryption_utils.dart';
 import 'package:client/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -69,9 +68,9 @@ abstract class ValidateUtils {
       return v;
     }
 
-    if (!EncryptionUtils.validateMasterKey64(value)) {
-       return "validation_fieldValueInvalid".T;
-    }
+    // if (!EncryptionUtils.validateMasterKey64(value)) {
+    //    return "validation_fieldValueInvalid".T;
+    // }
 
     return null;
   }

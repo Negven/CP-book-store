@@ -2,9 +2,7 @@ import 'package:client/classes/preferences.dart';
 import 'package:client/service/_services.dart';
 import 'package:flutter/material.dart';
 
-// Customizable settings that :
-// - can be different between devices (uiThemeMode)
-// - must be available instantly on app start (uiLanguageCode)
+
 enum Preference {
 
   uiThemeMode(EnumPreference(ThemeMode.system, ThemeMode.values)),

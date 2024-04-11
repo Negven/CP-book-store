@@ -18,41 +18,43 @@ import 'package:get/get.dart';
 
 import '../material/loading_indicator.dart';
 
-export 'package:client/widgets/universal/universal_field_cancel.dart';
-export 'package:client/widgets/universal/universal_query.dart';
+// Тип, який мапить елемент списку на плитці.
+// typedef UniversalTileMapper<I extends UniversalItem> = UniversalSelectableTile Function(I item, VoidCallback onTap);
 
-typedef UniversalTileMapper<I extends UniversalItem> = UniversalSelectableTile Function(I item, VoidCallback onTap);
-
+// Віджет списку, що дозволяє вибирати елементи.
 class UniversalSelectableList<I extends UniversalItem> extends StatefulWidget {
 
   final int itemsToShow;
-  final UniversalTileMapper<I> toTile;
+  // final UniversalTileMapper<I> toTile;
   final UniversalSelectableListController<I> controller;
 
-  const UniversalSelectableList({ required this.toTile, required this.controller, this.itemsToShow = WidgetUtils.itemsToShow, super.key});
+  const UniversalSelectableList({  required this.controller, this.itemsToShow = WidgetUtils.itemsToShow, super.key});
 
   @override
   State<StatefulWidget> createState() => UniversalSelectableListState<I>();
 
-
+  // Створення іконки радіокнопки на основі стану вибору.
   static FontIcon toRadio(bool selected) {
     return selected ? FontIcon.circleDot : FontIcon.circleEmpty;
   }
 
-
 }
+
+// Контролер списку, що дозволяє вибирати елементи.
 class UniversalSelectableListController<I extends UniversalItem> with Utilizable, Utilizables {
 
-  late final Rx<bool> isLoading; // first time
-  late final Rx<bool> isUploading; // more results
-  late final Rx<SelectableList<I>> list;
+  late final Rx<bool> isLoading; // Показник завантаження першого разу.
+  late final Rx<bool> isUploading; // Показник завантаження додаткових результатів.
+  late final Rx<SelectableList<I>> list; // Список елементів.
 
-  late final _scrollToSelected = u(0.obs);
+  late final _scrollToSelected = u(0.obs); // Сигнал для прокрутки до обраного елементу.
 
+  // Прокрутка до обраного елементу.
   scrollToSelected() {
     _scrollToSelected.value++;
   }
 
+  // Підписка на подію прокрутки.
   StreamSubscription<int> listenToScroll(Function() fn) {
     return _scrollToSelected.listen((_) => fn.call());
   }
@@ -66,15 +68,16 @@ class UniversalSelectableListController<I extends UniversalItem> with Utilizable
     this.isUploading = u(isUploading.obs);
   }
 
+  // Встановлює список елементів.
   void setList(List<I> content, {int? index}) {
     bool saveScrollPosition = index == null;
     list.value = SelectableList(content, index: saveScrollPosition ? list.value.index : index);
     if (!saveScrollPosition) scrollToSelected();
   }
 
-
 }
 
+// Стан списку, що дозволяє вибирати елементи.
 class UniversalSelectableListState<I extends UniversalItem> extends UtilizableState<UniversalSelectableList<I>> {
 
   final ScrollController _scrollController = ScrollController();
@@ -82,6 +85,7 @@ class UniversalSelectableListState<I extends UniversalItem> extends UtilizableSt
   int get _effectiveItemsToShow => WidgetUtils.maxItemToShowInModal(widget.itemsToShow);
   UniversalSelectableListController<I> get controller => widget.controller;
 
+  // Прокрутка до обраного елементу.
   scrollToSelected() {
     ScrollUtils.animateTo(_scrollController, controller.list.value.scrollIndex(_effectiveItemsToShow) * sizes.selectableTileHeight);
   }
@@ -151,27 +155,21 @@ class UniversalSelectableListState<I extends UniversalItem> extends UtilizableSt
             delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
 
-                    if (index >= controller.list.value.length - _effectiveItemsToShow && !controller.isUploading.value && !controller.isLoading.value) {
-                      CallUtils.defer(() {
-                        UniversalFieldContext.trigger(context, UniversalEvent.uploadMore);
-                      });
-                    }
+                if (index >= controller.list.value.length - _effectiveItemsToShow && !controller.isUploading.value && !controller.isLoading.value) {
+                  CallUtils.defer(() {
+                    UniversalFieldContext.trigger(context, UniversalEvent.uploadMore);
+                  });
+                }
 
-                    if (index == uploadingIndex) {
-                      return SizedBox(height: sizes.selectableTileHeight, child: const Center(child: LoadingIndicator.circular(size: SizeVariant.md)));
-                    }
+                if (index == uploadingIndex) {
+                  return SizedBox(height: sizes.selectableTileHeight, child: const Center(child: LoadingIndicator.circular(size: SizeVariant.md)));
+                }
 
-                    I item = selectableList.at(index);
+                I item = selectableList.at(index);
 
-                    item.focused = index == controller.list.value.index;
-                    item.selected = item == value;
+                item.focused = index == controller.list.value.index;
+                item.selected = item == value;
 
-                    final tile = widget.toTile(item, () {
-                      controller.list.value = controller.list.value.copyWith(index: index);
-                      UniversalFieldContext.submit(context);
-                    });
-
-                    return tile;
               },
               childCount: itemCount,
             ),
@@ -183,7 +181,7 @@ class UniversalSelectableListState<I extends UniversalItem> extends UtilizableSt
     });
   }
 
-
+  // Фіксує висоту віджету.
   static Widget fixHeight(double height, Widget child) {
     return ConstrainedBox(
         constraints: BoxConstraints(minHeight: height, maxHeight: height),

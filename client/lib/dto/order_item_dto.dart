@@ -27,7 +27,5 @@ class OrderDto extends Dto {
     return json;
   }
 
-// @override
-// String? get uid => id;
 }
 

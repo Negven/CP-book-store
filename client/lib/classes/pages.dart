@@ -1,11 +1,9 @@
 
+abstract class Routes {
+  // Спільні маршрути
+  static const String root = "/", // Головний маршрут
 
-
-abstract class Routes { // Common routes
-
-  static const String root = "/",
-
-      // only top-routes starts with /
+  // Тільки верхні маршрути починаються з "/"
       app = "/app",
       api = "/api",
       inf = "/inf",
@@ -27,33 +25,29 @@ abstract class Routes { // Common routes
       privacyPolicyOld = 'privacyPolicy',
       privacyPolicy = 'privacy-policy';
 
+  // Регулярний вираз для вилучення ідентифікатора книги з URL-адреси
   static final RegExp bookIdRegExp = RegExp('^($app|$api)/$book/([^/]+).*\$');
-
 }
-
 
 abstract class Pages {
+  static const String root = Routes.root; // Коренева сторінка
 
-  static const String root = Routes.root;
+  static const String app = Routes.app, // Маршрут для основного вмісту програми
+      book = "${Routes.app}/${Routes.book}", // Маршрут для сторінки книги
+      catalogue = "${Routes.app}/${Routes.catalogue}"; // Маршрут для каталогу
 
-  static const String app = Routes.app,
-      book = "${Routes.app}/${Routes.book}",
-      catalogue = "${Routes.app}/${Routes.catalogue}";
-  static List<String> auth = [Routes.user, Routes.basket, Routes.order, Routes.adminPage].map((path) => "${Routes.app}/$path").toList();
-  //     walletsOverview = "${Routes.app}/${Routes.wallets}/${Routes.overview}";
+  // Список авторизованих сторінок
+  static List<String> auth = [Routes.user, Routes.basket, Routes.order, Routes.adminPage]
+      .map((path) => "${Routes.app}/$path")
+      .toList();
 
-  static const String inf = Routes.inf,
-      privacyPolicy = "${Routes.inf}/${Routes.legal}/${Routes.privacyPolicy}",
-      termsOfService = "${Routes.inf}/${Routes.legal}/${Routes.termsOfService}";
-
-
+  // Функція для створення URL-адреси сторінки книги за ідентифікатором
   static String bookPageUrl(String bookId) => "$book/$bookId";
 
+  // Функція для отримання ідентифікатора книги з URI (за потреби)
   static String? bookIdFromUri(Uri uri) => bookIdFromPath(uri.toString());
 
+  // Функція для отримання ідентифікатора книги з шляху
   static String? bookIdFromPath(String path) =>
       Routes.bookIdRegExp.firstMatch(path)?.group(2);
-
 }
-
-

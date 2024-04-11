@@ -1,6 +1,3 @@
-
-
-// import 'package:client/@app/widgets/menu__vertical.dart';
 import 'package:client/@app/widgets/menu__horizontal.dart';
 import 'package:client/classes/sizes.dart';
 import 'package:client/classes/types.dart';
@@ -10,31 +7,19 @@ import 'package:client/widgets/section.dart';
 import 'package:flutter/material.dart';
 
 
-class Menu$Horizontal$Bottom extends StatelessWidget {
 
-  const Menu$Horizontal$Bottom({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(constraints: BoxConstraints.tightFor(height: sizes.menuBottomHeight, width: sizes.menuHorizontalWidth), child: const Center(child: Empty(),),);
-  }
-
-}
-
-
+// Клас для розділу додатку
 class AppSection extends ASection {
-
-  AppSection._private();
+  AppSection._private(); // Приватний конструктор
 
   @override
   Widget build(BuildContext context) {
-
-    // bool menu = sizes.content.isMenuVisible;
-    bool menu = false;
-    final top = menu ? 0.0 : sizes.menuTopHeight;
+    // Визначення положення верхнього краю в залежності від наявності меню
+    final top =  sizes.menuTopHeight;
     final left = (sizes.w100 - sizes.containerWidth) / 2;
 
-    final Children children = [
+    // Список дочірніх віджетів
+    final children = [
       Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -45,25 +30,16 @@ class AppSection extends ASection {
         ),
       ),
       Positioned(
-        top: top,
-        left: left,
-        height: sizes.h100 - top,
-        width: sizes.containerWidth,
+          top: top,
+          left: left,
+          height: sizes.h100 - top,
+          width: sizes.containerWidth,
           child: pageObx // NB! Must remains at the same position in widget tree to prevent State of stateful widgets recreation
       ),
       sizes.w100 > 800 ? const Menu$Horizontal$Top() : Empty(),
-      // menu ? const Menu$Vertical() : Empty.instance,
-      // menu ? const Menu$Horizontal$Top() : Empty.instance,
-      menu ? Empty.instance : Positioned(
-        left: 0,
-        top: sizes.h100 - sizes.menuBottomHeight,
-        height: sizes.menuBottomHeight,
-        width: sizes.menuHorizontalWidth,
-          child: const Menu$Horizontal$Bottom()
-      ),
-    ];
 
-    // NB! Using Stack to remain page widget at the same position in widget tree to prevent State of stateful widgets recreation
+    ];
+    // Використання Stack для збереження положення віджета сторінки в одному місці в дереві віджетів, щоб уникнути перестворення стану стейтфул-віджетів
     return Scaffold(
       appBar: sizes.w100 < 800 ? AppBar() : null,
       body: Stack(
@@ -75,6 +51,6 @@ class AppSection extends ASection {
     );
   }
 
+  // Статичний екземпляр класу
   static final ASection instance = AppSection._private();
-
 }

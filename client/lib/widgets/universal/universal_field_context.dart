@@ -7,83 +7,89 @@ import 'package:client/widgets/universal/universal_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
+// Перерахування для подій, пов'язаних з полем UniversalField.
 enum UniversalEvent {
-  submit,
-  arrowUp,
-  arrowDown,
-  uploadMore,
-  closeModal,
-  closeWith
+  submit, // Відправити форму
+  arrowUp, // Натискання клавіші "Вгору"
+  arrowDown, // Натискання клавіші "Вниз"
+  uploadMore, // Завантажити більше
+  closeModal, // Закрити модальне вікно
+  closeWith // Закрити зі значенням
 }
 
+// Клас, який представляє подію поля UniversalField.
 class UniversalFieldEvent {
-
-  final int stateId;
-  final UniversalEvent event;
-  final Object? payload;
+  final int stateId; // Ідентифікатор стану
+  final UniversalEvent event; // Тип події
+  final Object? payload; // Дані
 
   UniversalFieldEvent(this.stateId, this.event, this.payload);
-
 }
 
-// NB! Needed to track additional values
-// NB! Should only be non-disposable fields
-
+// Розширення для контексту поля UniversalField.
 extension UniversalFieldContextExtension on UtilizableState {
-
+  // Слухати глобальні події та викликати функцію при їх спрацюванні.
   void listenSimple(GlobalEvent event, Function(GlobalEvent) listener) {
     u(Services.events.listen(event, listener));
   }
 
+  // Слухати події UniversalField та викликати функцію при їх спрацюванні.
   void listenUniversal(Function(UniversalEvent, Object? payload) listener, [int? stateId]) {
     u(Services.events.listen(GlobalEvent.universalField, (UniversalFieldEvent event) {
       final id = stateId ?? UniversalFieldContext.stateId(context);
       if (id == event.stateId) listener.call(event.event, event.payload);
     }));
   }
-
 }
 
+// Клас, який представляє контекст поля UniversalField.
 class UniversalFieldContext extends InheritedWidget {
-
-  final int _stateId;
-  final SubmitType submitType;
-  final UniversalItem? _selectedItem;
+  final int _stateId; // Ідентифікатор стану
+  final SubmitType submitType; // Тип натискання кнопки "Enter"
+  final UniversalItem? _selectedItem; // Обраний елемент
 
   const UniversalFieldContext({
     required int stateId,
     this.submitType = SubmitType.enter,
     UniversalItem? selectedItem,
-    super.key,
-    required super.child
-  }) : _selectedItem = selectedItem, _stateId = stateId;
+    Key? key,
+    required Widget child,
+  }) : _selectedItem = selectedItem,
+        _stateId = stateId,
+        super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant UniversalFieldContext oldWidget) {
     return oldWidget._stateId != _stateId || oldWidget.submitType != submitType || oldWidget._selectedItem != _selectedItem;
   }
 
+  // Отримати екземпляр UniversalFieldContext з контексту.
   static UniversalFieldContext _of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<UniversalFieldContext>()!;
   }
 
+  // Запустити подію UniversalEvent.
   void _trigger(UniversalEvent universalEvent, [Object? payload]) {
     Services.events.trigger(GlobalEvent.universalField, UniversalFieldEvent(_stateId, universalEvent, payload));
   }
 
+  // Викликати подію UniversalEvent з контексту поля UniversalField.
   static trigger(BuildContext buildContext, UniversalEvent universalEvent) =>
-    _of(buildContext)._trigger(universalEvent);
+      _of(buildContext)._trigger(universalEvent);
 
+  // Закрити зі значенням.
   static closeWith(BuildContext buildContext, Object? payload) =>
-    _of(buildContext)._trigger(UniversalEvent.closeWith, payload);
+      _of(buildContext)._trigger(UniversalEvent.closeWith, payload);
 
+  // Отримати ідентифікатор стану з контексту поля UniversalField.
   static int stateId(BuildContext buildContext) =>
-    _of(buildContext)._stateId;
+      _of(buildContext)._stateId;
 
+  // Отримати обраний елемент з контексту поля UniversalField.
   static UniversalItem? selectedItem(BuildContext buildContext) =>
-    _of(buildContext)._selectedItem;
+      _of(buildContext)._selectedItem;
 
+  // Викликати відправку форми з контексту поля UniversalField.
   bool _submit() {
     switch (submitType) {
       case SubmitType.none:
@@ -98,9 +104,11 @@ class UniversalFieldContext extends InheritedWidget {
     }
   }
 
+  // Викликати обробку натискання клавіші з контексту поля UniversalField.
   static bool submit(BuildContext buildContext)
-    => _of(buildContext)._submit();
+  => _of(buildContext)._submit();
 
+  // Обробити натискання клавіші.
   bool _onKeyDown(KeyEvent event) {
 
     if (KeyboardBiKey.enter.isPressed(event)) {
@@ -125,12 +133,7 @@ class UniversalFieldContext extends InheritedWidget {
     return false;
   }
 
-
-  static KeyEventResult onKeyEvent (BuildContext buildContext, KeyEvent event) =>
-    ((event is KeyDownEvent || event is KeyRepeatEvent) && _of(buildContext)._onKeyDown(event)) ? KeyEventResult.handled : KeyEventResult.ignored;
-
-
-
-
+  // Обробник події клавіатури.
+  static KeyEventResult onKeyEvent(BuildContext buildContext, KeyEvent event) =>
+      ((event is KeyDownEvent || event is KeyRepeatEvent) && _of(buildContext)._onKeyDown(event)) ? KeyEventResult.handled : KeyEventResult.ignored;
 }
-

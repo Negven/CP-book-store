@@ -1,4 +1,3 @@
-import 'package:client/@main/configurator/configurator.dart';
 import 'package:client/env/env.dart';
 import 'package:client/service/auth_service.dart';
 import 'package:client/service/events_service.dart';
@@ -10,25 +9,21 @@ import 'package:client/service/storage_service.dart';
 import 'package:client/service/themes_service.dart';
 import 'package:client/service/translations_service.dart';
 import 'package:client/theme/master_colors.dart';
-import 'package:client/utils/encryption_utils.dart';
 import 'package:client/utils/font_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 
+// Клас MainInit для ініціалізації додатку
 class MainInit {
-
+  // Статичний метод beforeAppStart для ініціалізації додатку перед запуском
   static beforeAppStart() async {
-
     iEnv.validate();
 
-    // Initializing dev logger
+    // Ініціалізація режиму розробника
     LoggingService.beforeInit();
 
-    // NB! Must be without await as it will not be used instantly
-    EncryptionUtils.secureRandomInit();
-
-    // Before Get in use
+    // Перед використанням Get
     final Logger getLogger = Logger("GetX");
 
     Get.config(
@@ -40,29 +35,28 @@ class MainInit {
           getLogger.info(text);
         }
       },
-      // NB! Not setting up transitions as navigation will be used from go_router.
+      // NB! Не встановлюючи переходи, оскільки навігація буде використовуватися з go_router.
     );
 
     if (iEnv.isDev) {
       MasterColors.printSvgColors();
     }
 
-    Configurator.run();
+    // Налаштування
 
-    // Most important services
+    // Найважливіші сервіси
     WidgetsFlutterBinding.ensureInitialized();
     FontUtils.init();
     Get.put(LoggingService(), permanent: true);
     Get.put(EventsService(), permanent: true);
     Get.put(await initStorageService(), permanent: true);
 
-    // Other permanent services
+    // Інші постійні сервіси
     Get.put(NavigationService(), permanent: true);
     Get.put(TranslationsService(), permanent: true);
     Get.put(ThemesService(), permanent: true);
     Get.put(AuthService(), permanent: true);
     Get.put(ModalsService(), permanent: true);
     Get.lazyPut(() => PublicApiService());
-
   }
 }

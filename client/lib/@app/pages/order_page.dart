@@ -1,3 +1,4 @@
+// Імпорт необхідних пакетів та файлів
 import 'package:client/@app/app_page.dart';
 import 'package:client/service/translations_service.dart';
 import 'package:client/theme/theme.dart';
@@ -10,7 +11,9 @@ import '../../widgets/empty.dart';
 import '../../widgets/material/materials.dart';
 import '../../widgets/universal/universal_button.dart';
 
+// Визначення класу OrderPage, який представляє сторінку оформлення замовлення
 class OrderPage extends AppPage {
+  // Контролери для полів введення
   final TextEditingController fistNameController = TextEditingController();
   final TextEditingController secondNameController = TextEditingController();
   final TextEditingController middleNameController = TextEditingController();
@@ -20,9 +23,11 @@ class OrderPage extends AppPage {
   final TextEditingController cardOwnerController = TextEditingController();
   final TextEditingController ccvController = TextEditingController();
 
+  // Ключ для форми
   final _formKey = GlobalKey<FormState>();
   bool invalidValidation = false;
 
+  // Метод для оформлення замовлення
   void makeOrder() {
     final userId = Services.navigation.currentUserId;
     final List<BasketBookDto> basketItems = [];
@@ -30,10 +35,10 @@ class OrderPage extends AppPage {
         .then((page) => page.map((basketItem) {
       basketItems.add(basketItem);
     })).then((value) => basketItems.forEach((b) { Services.publicApi.deleteBasketItems(b);}) );
-
   }
 
   @override
+  // Метод для відображення вмісту сторінки
   Widget content(BuildContext context) {
     return Form(
         key: _formKey,
@@ -96,5 +101,4 @@ class OrderPage extends AppPage {
           ],
         ));
   }
-  
-}
+} 

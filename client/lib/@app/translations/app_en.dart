@@ -1,5 +1,4 @@
 
-// NB! camelCase_camelCase
 abstract class AppEN {
   static get translations => <String,String>{
     "_name": "Name",

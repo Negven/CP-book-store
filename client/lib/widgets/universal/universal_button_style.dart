@@ -4,7 +4,7 @@ import 'package:client/theme/universal_colors.dart';
 import 'package:client/widgets/universal/universal_template.dart';
 import 'package:flutter/material.dart';
 
-
+// UniversalButtonStyle - клас, що визначає стиль універсальної кнопки.
 class UniversalButtonStyle extends UniversalTemplate {
 
   @override ColorTheme get theme => super.theme!;
@@ -55,10 +55,10 @@ class UniversalButtonStyle extends UniversalTemplate {
     required super.strokeAlignment,
   });
 
-
+// Метод для вирішення стану кнопки.
   MaterialStateProperty<T> resolveWith<T>(T Function(UniversalButtonStyle, Set<MaterialState>) resolver) =>
       MaterialStateProperty.resolveWith((states) => resolver(this, states));
-
+  // Статичний метод для створення стилю кнопки на основі переданих параметрів.
   static UniversalButtonStyle from({
       ColorTheme? theme,
       Color? textColor,
@@ -85,7 +85,7 @@ class UniversalButtonStyle extends UniversalTemplate {
       Gradient? underBorder,
       UniversalTemplate? template,
     }) {
-
+    // Визначення параметрів за замовчуванням.
     ColorTheme t = defaultOf.theme(theme, template);
     SizeVariant s = defaultOf.size(size, template);
 
@@ -93,7 +93,7 @@ class UniversalButtonStyle extends UniversalTemplate {
     LayoutOrientation lo = layoutOrientation ?? template?.layoutOrientation ?? LayoutOrientation.base;
     var isVertical = lo == LayoutOrientation.vertical;
     SizeVariant p = padding ?? template?.paddingSize ?? (isVertical ? s.bigger : s);
-
+    // Створення та повернення стилю кнопки з врахуванням переданих параметрів.
     return UniversalButtonStyle._private(
         theme: t,
         textColor: defaultOf.textColor(textColor, template, t),
@@ -124,7 +124,7 @@ class UniversalButtonStyle extends UniversalTemplate {
 
 }
 
-
+// Розширення для набору станів MaterialState.
 extension MaterialStates on Set<MaterialState> {
   bool get isDisabled => contains(MaterialState.disabled);
   bool get isActive => !isDisabled;

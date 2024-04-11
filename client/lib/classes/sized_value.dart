@@ -2,7 +2,7 @@
 
 enum SizeVariant {
 
-  none, // Making separate value to be able set not null values and support
+  none, // Окреме значення для підтримки не нульових значень
 
   xxs,
   xs,
@@ -14,33 +14,34 @@ enum SizeVariant {
   xl,
   xxl;
 
+  // Метод для отримання значення з розміром
   T from<T>(SizedValue<T> v) {
     return v.get(this);
   }
-
+  // Метод для отримання меншого розміру
   SizeVariant get smaller {
     return index > 0 ? SizeVariant.values[index - 1] : none;
   }
-
+  // Метод для отримання більшого розміру
   SizeVariant get bigger {
     if (this == none) return none;
     return index + 1 < SizeVariant.values.length ? SizeVariant.values[index + 1] : none;
   }
-
+  // Метод для перевірки, чи є розмір нульовим
   bool get isNone => this == none;
-
+  // Метод для отримання розміру або значення за замовчуванням
   static SizeVariant nvl(SizeVariant? size, SizeVariant? templateSize, [SizeVariant defaultValue =  SizeVariant.none])
     => size ?? templateSize ?? defaultValue;
   // Aliases
   static const base = sm;
-
+  // Константи зі списками розмірів
   static const smTOmd = [sm, md];
   static const xsTOmd = [xs, sm, md];
   static const xsTOxl = [xs, sm, md, lg, xl];
   static const xsTOxxl = [xs, sm, md, lg, xl, xxl];
 
 }
-
+// Клас для значень розмірів
 class SizedValue<T> {
 
   final T? _xxs;
@@ -51,10 +52,10 @@ class SizedValue<T> {
   final T? _lg;
   final T? _xl;
   final T? _xxl;
-
+  // Конструктор для значень розмірів
   const SizedValue({T? xxs, T? xs, T? sm, T? md, T? lg, T? xl, T? xxl}) :
         _xxs = xxs, _xxl = xxl, _xl = xl, _lg = lg, _md = md, _sm = sm, _xs = xs;
-
+  // Метод для отримання значення розміру
   T get xxs => _xxs!;
   T get xs => _xs!;
   T get sm => _sm!;
@@ -63,7 +64,7 @@ class SizedValue<T> {
   T get lg => _lg!;
   T get xl => _xl!;
   T get xxl => _xxl!;
-
+  // Метод для отримання значення з вказаним розміром
   T get base => get(SizeVariant.base);
 
   T get(SizeVariant size) => _get(size)!;
@@ -93,10 +94,11 @@ class SizedValue<T> {
     // ignore: dead_code
     throw "Unknown size $size";
   }
-
+  // Метод для отримання меншого значення
   T smaller(SizeVariant size, T fallback) => tryGet(size.smaller, fallback);
+  // Метод для отримання більшого значення
   T bigger(SizeVariant size, T fallback) => tryGet(size.bigger, fallback);
-
+  // Метод для відображення значень за допомогою заданої функції
   SizedValue<N> map<N>(N Function(T) mapper) {
     return SizedValue<N>(
       xxs: _xxs != null ? mapper(_xxs as T) : null,
@@ -108,7 +110,7 @@ class SizedValue<T> {
       xxl: _xxl != null ? mapper(_xxl as T) : null,
     );
   }
-
+  // Статичний метод для відображення пар значень
   static SizedValue<C> mapDuo<A,B,C>(SizedValue<A> a, SizedValue<B> b, C Function(A,B) mapper) {
     return SizedValue<C>(
         xxs: mapper(a.xxs, b.xxs),

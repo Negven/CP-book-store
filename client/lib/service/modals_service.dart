@@ -1,32 +1,31 @@
-
-
-
-
 import 'package:client/classes/unexpected_error.dart';
 import 'package:client/service/_services.dart';
 import 'package:client/service/translations_service.dart';
 import 'package:client/widgets/modal_scaffold.dart';
 import 'package:client/widgets/page_builder.dart';
 import 'package:client/widgets/under_construction_modal.dart';
-import 'package:client/widgets/universal/universals.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../widgets/universal/universal_button.dart';
 
+// Результат підтвердження
 enum ConfirmResult {
   confirm,
   cancel,
   other
 }
 
+// Тип для підтвердження результату
 typedef ConfirmResultType = Future<ConfirmResult>;
 
-
-// Mainly created to make rendering modals over app content
+// Сервіс для модальних вікон
 class ModalsService extends GetxService {
 
+  // Ключ для навігатора модальних вікон
   static final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'ModalsNavigator');
 
+  // Отримати стан навігатора
   NavigatorState get navigatorState => navigatorKey.currentState!;
   BuildContext get _context => navigatorState.context;
 
@@ -34,9 +33,10 @@ class ModalsService extends GetxService {
   void onInit() {
     super.onInit();
 
+    // Прослуховування зміни шляху
     Services.navigation.currentPath.listen((_) {
 
-      // NB! If path changed then closing any modal or dialog
+      // Закрити будь-яке модальне вікно чи діалогове вікно при зміні шляху
       if (navigatorState.canPop()) {
         _closeAll();
       }
@@ -44,24 +44,25 @@ class ModalsService extends GetxService {
     });
   }
 
-
+  // Закрити одне модальне вікно
   void closeOne() {
     if (navigatorState.canPop()) {
       navigatorState.pop();
     }
   }
 
+  // Закрити з результатом
   void closeWith<T>(T? result) {
     if (navigatorState.canPop()) {
       navigatorState.pop<T>(result);
     }
   }
 
+  // Закрити всі модальні вікна
   bool _closeAll() {
 
     var closed = false;
 
-    // NB! Don't replace with pop until as it's not working
     while(navigatorState.canPop()) {
       closed = true;
       navigatorState.pop();
@@ -70,7 +71,7 @@ class ModalsService extends GetxService {
     return closed;
   }
 
-  // If some modals is open, don't close application on mobile Back press (or left swipe)
+  // Подія відсутності натискання кнопки "Назад"
   Future<bool> onWillPop() async  {
 
     if (_closeAll()) {
@@ -80,6 +81,7 @@ class ModalsService extends GetxService {
     return true;
   }
 
+  // Показати модальне вікно
   Future<T?> showModal<T>(PageBuilder modal) => showGeneralDialog<T>(
       context: _context,
       pageBuilder: (c, animation, secondaryAnimation) => ModalScaffold(modal),
@@ -87,11 +89,12 @@ class ModalsService extends GetxService {
       barrierLabel: 'x'
   );
 
+  // Показати сповіщення
   ConfirmResultType showAlert(String content) async {
     return showConfirm(title: 'Alert'.T, content: content, ok: true);
   }
 
-  // TODO stylize confirm box
+  // Показати підтвердження
   ConfirmResultType showConfirm({
     String? title, required String content,
     String? okText, bool ok = true,
@@ -99,53 +102,53 @@ class ModalsService extends GetxService {
     String? otherText, bool? other }) async {
 
     var result = await showDialog<ConfirmResult>(
-      context: _context,
-      builder: (BuildContext context) {
+        context: _context,
+        builder: (BuildContext context) {
 
-        var actions = <Widget>[];
+          var actions = <Widget>[];
 
-        if (other == true || otherText != null) {
-          actions.add(UniversalTextButton(
-            text: otherText ?? 'Other'.T,
-            onPressed: () => Navigator.pop(context, ConfirmResult.other),
-          ));
-        }
+          if (other == true || otherText != null) {
+            actions.add(UniversalTextButton(
+              text: otherText ?? 'Other'.T,
+              onPressed: () => Navigator.pop(context, ConfirmResult.other),
+            ));
+          }
 
-        if (cancel == true || cancelText != null) {
-          actions.add(UniversalTextButton(
-            text: cancelText ?? 'Cancel'.T,
-            onPressed: () => Navigator.pop(context, ConfirmResult.cancel),
-          ));
-        }
+          if (cancel == true || cancelText != null) {
+            actions.add(UniversalTextButton(
+              text: cancelText ?? 'Cancel'.T,
+              onPressed: () => Navigator.pop(context, ConfirmResult.cancel),
+            ));
+          }
 
-        if (ok == true || okText != null) {
-          actions.add(UniversalTextButton(
-            text: okText ?? 'OK'.T,
-            onPressed: () => Navigator.pop(context, ConfirmResult.confirm),
-          ));
-        }
+          if (ok == true || okText != null) {
+            actions.add(UniversalTextButton(
+              text: okText ?? 'OK'.T,
+              onPressed: () => Navigator.pop(context, ConfirmResult.confirm),
+            ));
+          }
 
-        if (actions.isEmpty) throw UnexpectedError();
+          if (actions.isEmpty) throw UnexpectedError();
 
-        return AlertDialog(
-            title: Text(title ?? 'Confirm'.T),
-            // backgroundColor: Colors.lightBlue,
-            content: Text(content),
-            actions: actions
+          return AlertDialog(
+              title: Text(title ?? 'Confirm'.T),
+              content: Text(content),
+              actions: actions
           );
         }
     );
 
-    return result ?? ConfirmResult.cancel; // if closed by barrierDismissible
+    return result ?? ConfirmResult.cancel;
   }
 
+  // Показати панель сповіщень
   showSnackBar(String text) {
     ScaffoldMessenger.of(_context).showSnackBar(
         SnackBar(content: Text(text))
     );
   }
 
-
+  // Захистити від виконання, якщо не готово
   (String, VoidCallback) protectIfNotReady({required String title, required VoidCallback callback, required bool isReady}) {
 
     if (!isReady) {
@@ -155,10 +158,9 @@ class ModalsService extends GetxService {
     return (title, callback);
   }
 
+  // Показати, якщо готово
   void showIfReady({required String title, required PageBuilder callback, required bool isReady}) {
 
     showModal(isReady ? callback : () => UnderConstructionModal(title: title));
   }
 }
-
-

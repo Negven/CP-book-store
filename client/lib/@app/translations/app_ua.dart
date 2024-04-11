@@ -1,5 +1,4 @@
 
-// NB! camelCase_camelCase
 abstract class AppUA {
   static get translations => <String,String>{
     "_name": "Ім'я",

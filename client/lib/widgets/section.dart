@@ -15,27 +15,15 @@ abstract class ASection extends StatelessWidget {
 
   final _builder = Rx<PageBuilder>(Empty.new);
   late final Obx pageObx = Obx(() {
-
-    final page = _builder.value();
-
-    // Transferring current walletId to all inner children
-    // final child = WalletContext(
-    //   walletId: Services.navigation.nCurrentWalletId,
-    //   child: page,
-    // );
     final child = _builder.value();
 
     return Interlayer(
-        // NB! Making sure to re-render whole page with state on navigation
-        // Mainly needed when context of page changed, bug page not, going from wallet/id1/overview to wallet/id2/overview
         key: _sectionPageKey.value,
         child: child
       );
   });
 
   void setPage([PageBuilder nextPageBuilder = Empty.new]) {
-    // NB! Making sure to re-render whole page with state on navigation
-    // Mainly needed when context of page changed, bug page not, like going from wallet/id1/overview to wallet/id2/overview
     _sectionPageKey.value = UniqueKey();
     _builder.trigger(nextPageBuilder);
   }

@@ -1,5 +1,4 @@
-
-
+// Імпорт необхідних пакетів
 import 'dart:async';
 
 import 'package:client/dto/page_dto.dart';
@@ -10,35 +9,36 @@ import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 
-
-class PN { // Parameter Name
+// Клас для зберігання назв параметрів
+class PN { // Назви параметрів
   static const
-    page = 'page',
-    limit = 'limit',
-    query = 'query',
-    sort = 'sort',
-    ignoreIfEmpty = 'ignoreIfEmpty',
-    isActive = 'isActive'
-    ;
+  page = 'page',
+      limit = 'limit',
+      query = 'query',
+      sort = 'sort',
+      ignoreIfEmpty = 'ignoreIfEmpty',
+      isActive = 'isActive';
 }
 
-class PV { // Parameter Value
+// Клас для зберігання значень параметрів
+class PV { // Значення параметрів
 
   static const
-    pageSize = 9,
-    pageSizeMax = 999; // NB! Don't increase, instead of use infinite load or pageable
+  pageSize = 9,
+      pageSizeMax = 999; // NB! Don't increase, instead of use infinite load or pageable
 }
 
+// Псевдонім для функції запиту
 typedef RequestQuery = Map<String, dynamic>;
 
-
+// Базовий клас API
 class _BaseApi extends GetConnect implements GetxService {
 
   _BaseApi() {
     timeout = const Duration(seconds: 30);
   }
 
-  // Must be as strings, as GetConnect don't support other types
+  // Перетворення запиту в рядок
   Map<String, String>? _convertQuery(RequestQuery? query) {
 
     if (query == null) return null;
@@ -61,6 +61,7 @@ class _BaseApi extends GetConnect implements GetxService {
     return result;
   }
 
+  // Перетворення значення в рядок
   String _toString(dynamic v) {
 
     if (v is Enum) {
@@ -70,21 +71,25 @@ class _BaseApi extends GetConnect implements GetxService {
     return v.toString();
   }
 
+  // Видалення запиту
   Future<T> deleteSimple<T>(String url, FromJson<T> converter, [ Map<String, String>? headers]) async {
     final response = await delete(url, headers: headers);
     return _responseToJson(response, converter);
   }
 
+  // Отримання запиту
   Future<T> getSimple<T>(String url, FromJson<T> converter, [RequestQuery? query, Map<String, String>? headers]) async {
     final response = await get(url, query: _convertQuery(query), headers: headers);
     return _responseToJson(response, converter);
   }
 
+  // Відправлення запиту
   Future<T> postSimple<T>(String url, dynamic data, FromJson<T> converter, [Map<String, String>? headers]) async {
     final response = await post(url, data, headers: headers);
     return _responseToJson(response, converter);
   }
 
+  // Обробка відповіді
   FutureOr<T> _responseToJson<T>(Response<dynamic> response, FromJson<T> converter) {
     if (response.status.hasError) {
       return Future.error(ErrorUtils.define(response));
@@ -93,6 +98,7 @@ class _BaseApi extends GetConnect implements GetxService {
     }
   }
 
+  // Отримання всіх сторінок даних
   Future<List<T>> getAllPaged<T>(String url, FromJson<PageDto<T>> converter, [RequestQuery? query]) async {
 
     query ??= {};
@@ -105,6 +111,7 @@ class _BaseApi extends GetConnect implements GetxService {
 
 }
 
+// Клас API сервісу
 class ApiService extends _BaseApi {
 
   @override
@@ -118,10 +125,10 @@ class ApiService extends _BaseApi {
     });
   }
 
+  // Модифікація запиту
   modifyRequest(Request<dynamic> request) {
     request.headers["Access-Control-Allow-Origin"] = "*";
     request.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS';
     request.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token';
   }
 }
-

@@ -3,32 +3,16 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 
-// Service because in future we will collect information about bugs on client devices
+// Сервіс для логування
 class LoggingService extends GetxService {
 
+  // Налаштування перед ініціалізацією
   static beforeInit() {
-    Logger.root.level = Level.INFO;
+    Logger.root.level = Level.INFO; // Рівень логування
     Logger.root.onRecord.listen((record) {
-      if (kDebugMode) {
-        print('${record.level.name[0]} ${record.message} @ ${record.loggerName}');
+      if (kDebugMode) { // Якщо у режимі налагодження
+        print('${record.level.name[0]} ${record.message} @ ${record.loggerName}'); // Вивести лог
       }
     });
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    if (iEnv.isProd) {
-      Logger.root.level = Level.WARNING;
-      Logger.root.onRecord.listen((record) {
-        if (kDebugMode) {
-          print('${record.level.name[0]} ${record.message} @ ${record.loggerName}');
-        } else {
-          // TODO send logs
-        }
-      });
-    }
-
   }
 }

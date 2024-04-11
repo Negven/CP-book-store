@@ -1,32 +1,31 @@
-
-
 import 'package:client/dto/user_dto.dart';
 import 'package:client/utils/convert_utils.dart';
 import 'package:client/utils/date_time_utils.dart';
 
-
+// Поля для доступу до даних
 class _AccessDetailsFields {
-  final jwt = 'jwt';
-  final expiration = 'expiration';
-  final createdAt = 'createdAt';
-  final ws = 'ws';
-  final wallet = 'wallet';
-  final user = 'user';
+  final jwt = 'jwt'; // JWT токен
+  final expiration = 'expiration'; // Термін дії
+  final createdAt = 'createdAt'; // Дата створення
+  final ws = 'ws'; // WebSocket
+  final wallet = 'wallet'; // Гаманець
+  final user = 'user'; // Користувач
 }
 
+// Об'єкт для деталей доступу
 class AccessDetailsDto {
 
-  static final f = _AccessDetailsFields();
+  static final f = _AccessDetailsFields(); // Поля доступу
 
-  late final String jwt;
-  late final UtcDateTime expiration;
-  late final UtcDateTime createdAt;
+  late final String jwt; // JWT токен
+  late final UtcDateTime expiration; // Термін дії
+  late final UtcDateTime createdAt; // Дата створення
 
-  late final String ws;
+  late final String ws; // WebSocket
 
-  late final ReadUserDto user;
+  late final ReadUserDto user; // Інформація про користувача
 
-  // NB! Details stored on client end, don't add required fields without fallbacks here
+  // Конструктор з JSON
   AccessDetailsDto.fromJson(Json json) {
 
     jwt = json[f.jwt];
@@ -38,6 +37,7 @@ class AccessDetailsDto {
     user = ReadUserDto.fromJson(json[f.user]);
   }
 
+  // Перетворення в JSON
   Map<String, dynamic> toJson() {
     var json = <String, dynamic>{};
     json[f.jwt] = jwt;
@@ -49,5 +49,3 @@ class AccessDetailsDto {
   }
 
 }
-
-

@@ -1,4 +1,3 @@
-
 import 'package:client/classes/sizes.dart';
 import 'package:client/widgets/space.dart';
 import 'package:client/widgets/universal/universal_button.dart';
@@ -12,20 +11,20 @@ import 'package:get/get.dart';
 import '../font_icon.dart';
 
 class UniversalRadioGroup<T extends Enum> extends StatelessWidget {
-
-  final List<UniversalRadioItem<T>> items;
-  final UniversalController<UniversalRadioItem> controller;
-  final Widget Function(UniversalRadioItem<T> item, void Function() onTap) toRadio;
-  final int columns;
-  final SizeVariant gap;
+  // Група радіокнопок універсального типу, що відображається у вигляді віджету.
+  final List<UniversalRadioItem<T>> items; // Список пунктів меню.
+  final UniversalController<UniversalRadioItem> controller; // Контролер для вибору пункту меню.
+  final Widget Function(UniversalRadioItem<T> item, void Function() onTap) toRadio; // Функція, що конвертує пункт меню в радіокнопку.
+  final int columns; // Кількість колонок для відображення пунктів меню.
+  final SizeVariant gap; // Відстань між радіокнопками.
 
   static Widget toDefaultRadio(UniversalRadioItem item, void Function() onTap) =>
-    UniversalButton(
-      icon: item.icon,
-      text: item.title,
-      type: item.selected ? SurfaceType.filled : SurfaceType.outlined,
-      onPressed: onTap,
-    );
+      UniversalButton(
+        icon: item.icon,
+        text: item.title,
+        type: item.selected ? SurfaceType.filled : SurfaceType.outlined,
+        onPressed: onTap,
+      );
 
   const UniversalRadioGroup({
     super.key,
@@ -42,7 +41,7 @@ class UniversalRadioGroup<T extends Enum> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<List<UniversalRadioItem<T>>> sampleData = items.slices(columns).toList();
+    List<List<UniversalRadioItem<T>>> sampleData = items.slices(columns).toList(); // Розбиваємо список пунктів меню на колонки.
     return Obx(() {
       var rows = sampleData.map((rowData) {
         List<Widget> row = [];
@@ -54,17 +53,16 @@ class UniversalRadioGroup<T extends Enum> extends StatelessWidget {
           size: gap,
           children: row,
         );
-      }).toList();
+      }).toList(); // Перетворюємо кожен рядок пунктів меню на список віджетів рядка.
       return  Space.column(
         size: gap,
         children: rows,
-      );
+      ); // Повертаємо колонку віджетів рядків.
     });
   }
 }
 
-
-
+// Пункт радіогрупи універсального типу.
 class UniversalRadioItem<T extends Enum> extends UniversalItem<T> {
   FontIcon? icon;
 

@@ -1,37 +1,41 @@
-
-
 import 'package:flutter/widgets.dart';
 
-
-
+// Клас, який представляє крок віджета
 class WidgetStep<T> {
 
-  final T step;
-  T? previous;
-  final Set<T> next;
+  final T step; // Крок
+  T? previous; // Попередній крок
+  final Set<T> next; // Наступні кроки
 
-  Widget? widget;
+  Widget? widget; // Віджет, пов'язаний з кроком
+
+  // Конструктор класу
   WidgetStep(this.step) : next = {};
 
 }
 
+// Дії, які можна виконати під час переходу між кроками
 enum WidgetStepAction {
 
-  go,
-  skip,
-  wait;
+  go, // Перехід
+  skip, // Пропустити
+  wait; // Очікування
 
+  // Перевірка, чи дозволено виконання дії "перехід"
   bool get isGo => this == go;
 }
 
+// Клас, що представляє кроки віджета
 class WidgetSteps<T> {
 
-  final Map<T, WidgetStep<T>> _steps = {};
+  final Map<T, WidgetStep<T>> _steps = {}; // Карта кроків
 
-  late final WidgetStep<T> _root;
+  late final WidgetStep<T> _root; // Кореневий крок
 
+  // Отримати кореневий крок
   T get root => _root.step;
 
+  // Конструктор класу
   WidgetSteps(Map<T, dynamic> steps) {
     if (steps.length != 1) throw "Root must be single";
     var rootStep = steps.keys.first;
@@ -39,22 +43,27 @@ class WidgetSteps<T> {
     _root = _steps[rootStep]!;
   }
 
+  // Перевірка можливості переходу на певний крок
   WidgetStepAction canGoTo(T? step) {
     return step != null ? (widgetFor(step) != null ? WidgetStepAction.go : WidgetStepAction.skip) : WidgetStepAction.wait;
   }
 
+  // Отримати наступний крок для певного кроку
   T? nextFor(T? step) {
     var next = _steps[step]!.next;
     return next.length == 1 ? next.first : null;
   }
 
+  // Отримати віджет для певного кроку
   Widget? widgetFor(T step) =>
-    _steps[step]!.widget;
+      _steps[step]!.widget;
 
+  // Отримати об'єкт кроку за його ідентифікатором
   WidgetStep<T> _step(T step) {
     return _steps[step] ?? (_steps[step] = WidgetStep(step));
   }
 
+  // Підготовка кроків з конфігурації
   void _prepare(T step, dynamic config) {
 
     if (config is Widget) {
@@ -109,6 +118,7 @@ class WidgetSteps<T> {
 
   }
 
+  // Перевірка, чи крок є попереднім до іншого кроку
   bool isPreviousTo(T previous, T current) {
 
     if (!_steps.containsKey(previous) || !_steps.containsKey(current)) {
@@ -128,4 +138,3 @@ class WidgetSteps<T> {
   }
 
 }
-

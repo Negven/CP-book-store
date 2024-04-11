@@ -1,5 +1,3 @@
-
-
 import 'package:client/@app/app_page.dart';
 import 'package:client/classes/sizes.dart';
 import 'package:client/dto/book_dto.dart';
@@ -10,32 +8,33 @@ import 'package:client/widgets/empty.dart';
 import 'package:client/widgets/universal/universal_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '../../classes/pages.dart';
 import '../modals/login_account_modal/@login_account_modal.dart';
 import '../widgets/Book.dart';
 
-
-
-
+// Визначення класу BookPage, який представляє сторінку книги
 class BookPage extends AppPage {
+  // Змінна для зберігання даних про книгу
   late final Rx<BookDto?> bookData = BookDto().obs;
+  // Змінна для визначення статусу автентифікації користувача
   final RxBool isAuth = Services.auth.isSignedIn.obs;
 
-  BookPage({super.key}){
+  // Конструктор класу, який завантажує дані про книгу
+  BookPage({super.key}) {
     Services.publicApi.getBook(Pages.bookIdFromUri(Services.navigation.uri))
         .then((book) {
-          bookData.value = book;
+      bookData.value = book;
     });
-
   }
 
+  // Метод для встановлення статусу автентифікації
   setAuth() {
     isAuth.value = Services.auth.isSignedIn;
   }
 
+  // Метод для відображення вмісту книги
   List<Widget> bookContent(BuildContext context) {
     Services.auth.listen(setAuth, instant: true);
     final (title, callback) = LoginAccountModal.addOne();
@@ -55,7 +54,6 @@ class BookPage extends AppPage {
             height: 200,
             child: Text(
               "${book?.info}",
-              // maxLines: 10,
               textAlign: TextAlign.start,
             ),
           ),
@@ -74,6 +72,7 @@ class BookPage extends AppPage {
   }
 
   @override
+  // Метод для відображення вмісту сторінки
   Widget content(BuildContext context) {
     return Obx(() {
       final book = bookData.value;
@@ -86,12 +85,9 @@ class BookPage extends AppPage {
               ],
             ),
             sizes.w100 > 800 ? Row(children: bookContent(context)) : Column(children: bookContent(context),),
-
-
           ],
         ),
       );
     });
   }
-
 }

@@ -12,7 +12,6 @@ class _Order {
 class OrderDto extends Dto {
 
   static final f = _Order();
-  // late int id;
   late List<BookDto> books;
 
   OrderDto(this.books);
@@ -27,7 +26,5 @@ class OrderDto extends Dto {
     return json;
   }
 
-// @override
-// String? get uid => id;
 }
 

@@ -1,37 +1,38 @@
-
-
 import 'package:client/dto/page_dto.dart';
 import 'package:client/utils/convert_utils.dart';
 
 import 'dto.dart';
 
+// Поля для об'єкту "Книга"
 class _Book {
-  final id = "id";
-  final name = "name";
-  final price = "price";
-  final rating = "rating";
-  final img = "img";
-  final info = "info";
-  final genreId = "genreId";
-  final authorId = "authorId";
-  final genreName = "genreName";
-  final authorName = "authorName";
+  final id = "id"; // ID
+  final name = "name"; // Назва
+  final price = "price"; // Ціна
+  final rating = "rating"; // Рейтинг
+  final img = "img"; // Зображення
+  final info = "info"; // Інформація
+  final genreId = "genreId"; // ID жанру
+  final authorId = "authorId"; // ID автора
+  final genreName = "genreName"; // Назва жанру
+  final authorName = "authorName"; // Ім'я автора
 }
 
+// Об'єкт для представлення книги
 class BookDto extends Dto {
 
-  static final f = _Book();
-  // late int id;
-  late String name;
-  late int price;
-  late int rating;
-  late String img;
-  late String info;
-  late int genreId;
-  late int authorId;
-  late String genreName;
-  late String authorName;
+  static final f = _Book(); // Поля об'єкту
 
+  late String name; // Назва
+  late int price; // Ціна
+  late int rating; // Рейтинг
+  late String img; // Зображення
+  late String info; // Інформація
+  late int genreId; // ID жанру
+  late int authorId; // ID автора
+  late String genreName; // Назва жанру
+  late String authorName; // Ім'я автора
+
+  // Конструктор
   BookDto(){
     name = "";
     price = 0;
@@ -44,6 +45,7 @@ class BookDto extends Dto {
     authorName = "";
   }
 
+  // Конструктор з JSON
   BookDto.fromJson(Json json) {
     id = json[f.id];
     name = json[f.name];
@@ -57,6 +59,7 @@ class BookDto extends Dto {
     authorName = json[f.authorName];
   }
 
+  // Перетворення в JSON
   Json toJson() {
     final Json json = {};
     json[f.id] = id;
@@ -72,12 +75,12 @@ class BookDto extends Dto {
     return json;
   }
 
-  // @override
-  // String? get uid => id;
 }
 
+// Об'єкт для представлення сторінки книг
 class BookPageDto extends PageDto<BookDto> {
 
+  // Конструктор з JSON
   BookPageDto.fromJson(json) : super.fromJson(json, BookDto.fromJson);
 
 }
